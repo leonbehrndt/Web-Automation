@@ -1,5 +1,6 @@
-from selenium import webdriver
 from selenium.common import exceptions
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from time import sleep
 
@@ -33,6 +34,7 @@ Iterates through a specific
 def iterateOverHLinks(containerPath, itemPath):
     lectureScriptsContainer = chrome.find_element_by_xpath(containerPath)
     scriptNames = lectureScriptsContainer.find_elements_by_xpath(itemPath)
+    o = Options()
 
     ## Go through folders
     for i, name in enumerate(scriptNames):
@@ -49,22 +51,18 @@ def iterateOverHLinks(containerPath, itemPath):
             scripts = scriptsContainer.find_elements_by_xpath(itemPath)
             script = scripts[j]
             script.click()
+            # TODO: Downloading page after opening
             
         chrome.back()
-
-        """ ## Go through tabs to download items
-        windows = chrome.window_handles
-        for k, window in enumerate(windows):
-            if window is not windows[0]:
-                chrome.switch_to.window(windows[k])
-                sleep(1)
-                #downloadButton = chrome.find_element_by_xpath('//*[@id="download"]')
-                #downloadButton.click()
-                chrome.close()
-            else:
-                chrome.back()
-                continue
-        sleep(5) """
+    
+    ## Go through tabs to download items
+    windows = chrome.window_handles
+    for k, window in enumerate(windows):
+        if window is not windows[0]:
+            chrome.switch_to.window(windows[k])
+            chrome.close()
+        else:
+            continue
 
         
 iterateOverHLinks('//*[@class="ilContainerItemsContainer "]', '//a[@class="il_ContainerItemTitle"]')
